@@ -1,0 +1,36 @@
+com.example.myandroidapp.test.app-lifecycle-livedata-core-2.8.0-0 C:\Users\pc2\.gradle\caches\8.13\transforms\0bdf3e963d69f558e4aac86d2ae56770\transformed\lifecycle-livedata-core-2.8.0\res
+com.example.myandroidapp.test.app-ui-text-release-1 C:\Users\pc2\.gradle\caches\8.13\transforms\148234adf8b589d002f7ff00afaf3b59\transformed\ui-text-release\res
+com.example.myandroidapp.test.app-runtime-release-2 C:\Users\pc2\.gradle\caches\8.13\transforms\18c0d4ebf571f6dc5c3403952cf15091\transformed\runtime-release\res
+com.example.myandroidapp.test.app-emoji2-1.3.0-3 C:\Users\pc2\.gradle\caches\8.13\transforms\1be728266e2c0a75f6c4b282126905f3\transformed\emoji2-1.3.0\res
+com.example.myandroidapp.test.app-lifecycle-viewmodel-ktx-2.8.0-4 C:\Users\pc2\.gradle\caches\8.13\transforms\2d956c49f9fed3f8bea7d868e3928210\transformed\lifecycle-viewmodel-ktx-2.8.0\res
+com.example.myandroidapp.test.app-annotation-experimental-1.4.0-5 C:\Users\pc2\.gradle\caches\8.13\transforms\302e78bd8946835c02a756f8fc8923dc\transformed\annotation-experimental-1.4.0\res
+com.example.myandroidapp.test.app-savedstate-ktx-1.2.1-6 C:\Users\pc2\.gradle\caches\8.13\transforms\381e88bebe37b8c788bae9c3a5479bea\transformed\savedstate-ktx-1.2.1\res
+com.example.myandroidapp.test.app-activity-compose-1.9.0-7 C:\Users\pc2\.gradle\caches\8.13\transforms\4e6eeafb155c19da4de6484397929316\transformed\activity-compose-1.9.0\res
+com.example.myandroidapp.test.app-lifecycle-viewmodel-release-8 C:\Users\pc2\.gradle\caches\8.13\transforms\512eed1ba2735b7b39c1ca7127c961fa\transformed\lifecycle-viewmodel-release\res
+com.example.myandroidapp.test.app-core-1.13.1-9 C:\Users\pc2\.gradle\caches\8.13\transforms\55eb1f5d199027658345628e3d329aae\transformed\core-1.13.1\res
+com.example.myandroidapp.test.app-lifecycle-runtime-release-10 C:\Users\pc2\.gradle\caches\8.13\transforms\646764aeec3c8b9ba794dc3d1f15fdb9\transformed\lifecycle-runtime-release\res
+com.example.myandroidapp.test.app-profileinstaller-1.3.1-11 C:\Users\pc2\.gradle\caches\8.13\transforms\69b73afc54a6e1ea7fdf60d26b457a55\transformed\profileinstaller-1.3.1\res
+com.example.myandroidapp.test.app-lifecycle-viewmodel-savedstate-2.8.0-12 C:\Users\pc2\.gradle\caches\8.13\transforms\7c79023791e400083dc0aa3cb9a6cefd\transformed\lifecycle-viewmodel-savedstate-2.8.0\res
+com.example.myandroidapp.test.app-startup-runtime-1.1.1-13 C:\Users\pc2\.gradle\caches\8.13\transforms\86ade7a928bb5d9a6953d060d30df5c9\transformed\startup-runtime-1.1.1\res
+com.example.myandroidapp.test.app-ui-graphics-release-14 C:\Users\pc2\.gradle\caches\8.13\transforms\8a09172b6e847d6483dcaba3121a363a\transformed\ui-graphics-release\res
+com.example.myandroidapp.test.app-ui-unit-release-15 C:\Users\pc2\.gradle\caches\8.13\transforms\8eb391f3e8c89c74fd4122e0bedc1a98\transformed\ui-unit-release\res
+com.example.myandroidapp.test.app-customview-poolingcontainer-1.0.0-16 C:\Users\pc2\.gradle\caches\8.13\transforms\903d7fda755383ae1d4b13d75fa2b0fb\transformed\customview-poolingcontainer-1.0.0\res
+com.example.myandroidapp.test.app-core-1.5.0-17 C:\Users\pc2\.gradle\caches\8.13\transforms\9291b728ef5bc811142e50c5cb9d24ca\transformed\core-1.5.0\res
+com.example.myandroidapp.test.app-runtime-saveable-release-18 C:\Users\pc2\.gradle\caches\8.13\transforms\9f05a1740b4d20b9d93f65b4ea5f2d47\transformed\runtime-saveable-release\res
+com.example.myandroidapp.test.app-core-runtime-2.2.0-19 C:\Users\pc2\.gradle\caches\8.13\transforms\a27ae00ffdff33947404de28cc90539e\transformed\core-runtime-2.2.0\res
+com.example.myandroidapp.test.app-savedstate-1.2.1-20 C:\Users\pc2\.gradle\caches\8.13\transforms\a850603349686fd138ccebf1f92c7dbf\transformed\savedstate-1.2.1\res
+com.example.myandroidapp.test.app-core-ktx-1.13.1-21 C:\Users\pc2\.gradle\caches\8.13\transforms\b6b534395a838b52cb53b59159f3d157\transformed\core-ktx-1.13.1\res
+com.example.myandroidapp.test.app-ui-release-22 C:\Users\pc2\.gradle\caches\8.13\transforms\c3a11a40f165e40eaae29021f4752926\transformed\ui-release\res
+com.example.myandroidapp.test.app-ui-test-junit4-release-23 C:\Users\pc2\.gradle\caches\8.13\transforms\c7333e26bb086acd742ecc84f474e688\transformed\ui-test-junit4-release\res
+com.example.myandroidapp.test.app-ui-util-release-24 C:\Users\pc2\.gradle\caches\8.13\transforms\cbfedc0de806a58642965f3d34a58107\transformed\ui-util-release\res
+com.example.myandroidapp.test.app-activity-ktx-1.9.0-25 C:\Users\pc2\.gradle\caches\8.13\transforms\d37d62d513fa97b71a0f47ed5846359a\transformed\activity-ktx-1.9.0\res
+com.example.myandroidapp.test.app-activity-1.9.0-26 C:\Users\pc2\.gradle\caches\8.13\transforms\dd29cc24ffed3bb3e66a86e4c8060571\transformed\activity-1.9.0\res
+com.example.myandroidapp.test.app-lifecycle-runtime-ktx-release-27 C:\Users\pc2\.gradle\caches\8.13\transforms\e2cddd5a0b0c0893a1b928afaa8300e0\transformed\lifecycle-runtime-ktx-release\res
+com.example.myandroidapp.test.app-lifecycle-process-2.8.0-28 C:\Users\pc2\.gradle\caches\8.13\transforms\eefeb579f174901b73c08ae75222807a\transformed\lifecycle-process-2.8.0\res
+com.example.myandroidapp.test.app-ui-geometry-release-29 C:\Users\pc2\.gradle\caches\8.13\transforms\f36ed845c4bd6815b320e1714e0cc37a\transformed\ui-geometry-release\res
+com.example.myandroidapp.test.app-ui-test-release-30 C:\Users\pc2\.gradle\caches\8.13\transforms\f6210e9bc1ddfac8568d3d7f3c5c91f4\transformed\ui-test-release\res
+com.example.myandroidapp.test.app-androidTest-31 C:\Users\pc2\Desktop\Galeri APP\app\build\generated\res\resValues\androidTest\debug
+com.example.myandroidapp.test.app-updated_navigation_xml-32 C:\Users\pc2\Desktop\Galeri APP\app\build\generated\updated_navigation_xml\debugAndroidTest
+com.example.myandroidapp.test.app-mergeDebugAndroidTestResources-33 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.myandroidapp.test.app-mergeDebugAndroidTestResources-34 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.myandroidapp.test.app-debugAndroidTest-35 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
