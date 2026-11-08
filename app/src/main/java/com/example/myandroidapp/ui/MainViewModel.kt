@@ -58,6 +58,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(OrganizerUiState())
     val uiState: StateFlow<OrganizerUiState> = _uiState.asStateFlow()
 
+    private fun sanitizeDisplayName(name: String): String {
+        return name.take(50).replace(Regex("[\\n\\r\\t]"), " ")
+    }
+
     fun onPermissionResult(granted: Boolean) {
         _uiState.update { it.copy(hasPermission = granted) }
         if (granted) {
@@ -157,7 +161,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 images = updatedImages,
                 trashedItems = updatedTrash,
                 currentIndex = nextIndex,
-                userMessage = "\"${imageToTrash.name}\" çöpe taşındı."
+                userMessage = "\"${sanitizeDisplayName(imageToTrash.name)}\" çöpe taşındı."
             )
         }
     }
@@ -253,7 +257,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             it.copy(
                 trashedItems = updatedTrash,
                 images = updatedImages,
-                userMessage = "\"${item.name}\" klasörüne geri yüklendi."
+                userMessage = "\"${sanitizeDisplayName(item.name)}\" klasörüne geri yüklendi."
             )
         }
     }

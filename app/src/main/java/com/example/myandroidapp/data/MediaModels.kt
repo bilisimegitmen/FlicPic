@@ -19,7 +19,7 @@ data class FolderItem(
     val bucketId: String,
     val name: String,
     val coverUri: Uri?,
-    var count: Int
+    val count: Int
 )
 
 sealed interface PendingConsentRequest {

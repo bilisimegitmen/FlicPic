@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,6 +18,10 @@ import kotlinx.coroutines.withContext
 class MediaRepository(private val context: Context) {
 
     private val contentResolver: ContentResolver = context.contentResolver
+
+    companion object {
+        private const val TAG = "MediaRepository"
+    }
 
     /**
      * Queries all image albums / folders currently indexed on the device.
@@ -62,12 +67,14 @@ class MediaRepository(private val context: Context) {
                             count = 1
                         )
                     } else {
-                        existing.count++
+                        folderMap[bucketId] = existing.copy(count = existing.count + 1)
                     }
                 }
             }
+        } catch (e: SecurityException) {
+            Log.w(TAG, "MediaStore access denied for folder query", e)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Unexpected error in getFolders", e)
         }
 
         folderMap.values.sortedByDescending { it.count }
@@ -129,8 +136,10 @@ class MediaRepository(private val context: Context) {
                     )
                 }
             }
+        } catch (e: SecurityException) {
+            Log.w(TAG, "MediaStore access denied for folder images query", e)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Unexpected error in getImagesForFolder", e)
         }
 
         items
@@ -197,8 +206,10 @@ class MediaRepository(private val context: Context) {
                     )
                 }
             }
+        } catch (e: SecurityException) {
+            Log.w(TAG, "MediaStore access denied for trashed images query", e)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, "Unexpected error in getSystemTrashedImages", e)
         }
 
         items
@@ -216,11 +227,12 @@ class MediaRepository(private val context: Context) {
                 val pendingIntent = MediaStore.createTrashRequest(contentResolver, uris, trash)
                 OperationResult.RequiresConsent(pendingIntent.intentSender)
             } catch (e: Exception) {
-                OperationResult.Error(e.localizedMessage ?: "Çöp işlem isteği oluşturulamadı.")
+                Log.e(TAG, "Trash request failed", e)
+                OperationResult.Error("Çöp işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.")
             }
         } else {
-            // Android 10 and lower fallback
-            OperationResult.Success
+            // Android 10 ve altı sistem çöp kutusunu (IS_TRASHED) desteklemez.
+            OperationResult.Error("Cihazınızın Android sürümü sistem çöp kutusunu desteklemiyor. Fotoğrafları 'Kalıcı Sil' seçeneği ile silebilirsiniz.")
         }
     }
 
@@ -236,7 +248,8 @@ class MediaRepository(private val context: Context) {
                 val pendingIntent = MediaStore.createDeleteRequest(contentResolver, uris)
                 OperationResult.RequiresConsent(pendingIntent.intentSender)
             } catch (e: Exception) {
-                OperationResult.Error(e.localizedMessage ?: "Kalıcı silme isteği oluşturulamadı.")
+                Log.e(TAG, "Delete request failed", e)
+                OperationResult.Error("Kalıcı silme işlemi gerçekleştirilemedi. Lütfen tekrar deneyin.")
             }
         } else {
             try {
@@ -250,10 +263,12 @@ class MediaRepository(private val context: Context) {
                 ) {
                     OperationResult.RequiresConsent(securityException.userAction.actionIntent.intentSender)
                 } else {
-                    OperationResult.Error(securityException.localizedMessage ?: "Silme izni reddedildi.")
+                    Log.w(TAG, "Delete permission denied", securityException)
+                    OperationResult.Error("Silme izni reddedildi.")
                 }
             } catch (e: Exception) {
-                OperationResult.Error(e.localizedMessage ?: "Bilinmeyen silme hatası.")
+                Log.e(TAG, "Unexpected delete error", e)
+                OperationResult.Error("Silme işlemi sırasında bir hata oluştu.")
             }
         }
     }

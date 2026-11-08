@@ -31,26 +31,53 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyAndroidAppTheme {
-                val requiredPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES)
-                } else {
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                val requiredPermissions = when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> arrayOf(
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+                    )
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> arrayOf(
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    )
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.P -> arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                    else -> arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
                 }
 
                 val permissionLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions()
                 ) { results ->
-                    val isGranted = results.values.any { it }
+                    val isGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        results[Manifest.permission.READ_MEDIA_IMAGES] == true ||
+                        results[Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED] == true
+                    } else {
+                        results.values.any { it }
+                    }
                     viewModel.onPermissionResult(isGranted)
                 }
 
                 // Initial permission check on launch
                 LaunchedEffect(Unit) {
-                    val hasPermission = requiredPermissions.any { perm ->
+                    val hasPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                         ContextCompat.checkSelfPermission(
                             this@MainActivity,
-                            perm
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        ) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(
+                            this@MainActivity,
+                            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
                         ) == PackageManager.PERMISSION_GRANTED
+                    } else {
+                        requiredPermissions.any { perm ->
+                            ContextCompat.checkSelfPermission(
+                                this@MainActivity,
+                                perm
+                            ) == PackageManager.PERMISSION_GRANTED
+                        }
                     }
                     viewModel.onPermissionResult(hasPermission)
                 }

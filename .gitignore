@@ -14,3 +14,22 @@
 .cxx
 local.properties
 
+# APK / AAB outputs
+*.apk
+*.aab
+/APK/
+
+# Signing keys & secrets
+*.keystore
+*.jks
+*.pem
+*.key
+credentials.json
+
+# Environment files
+.env
+.env.*
+
+# Security audit artifacts
+.security-audit/
+
