@@ -41,8 +41,9 @@ Projeyi kendi yerel geliştirme ortamınızda çalıştırmak için şu adımlar
    ---
 
    Bu proje, geliştirme aşamasında Cloudflare Security Audit yetenekleri ve modern statik kod analizi araçlarıyla taranarak olası zafiyetlere karşı güçlendirilmiştir.
----
+---                        
 👤 İletişim & Geliştirici
 Geliştirici: Özgür Özgür Dündar (bilisimegitmen)
 
 Proje Bağlantısı: https://github.com/bilisimegitmen/FlicPic
+---
