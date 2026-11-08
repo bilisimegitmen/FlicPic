@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import com.example.myandroidapp.ui.ImageOrganizerScreen
 import com.example.myandroidapp.ui.MainViewModel
-import com.example.myandroidapp.ui.theme.ColorDark0
+import com.example.myandroidapp.ui.theme.ColorCanvas
 import com.example.myandroidapp.ui.theme.MyAndroidAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxSize()
                         .safeDrawingPadding(),
-                    color = ColorDark0
+                    color = ColorCanvas
                 ) {
                     ImageOrganizerScreen(
                         viewModel = viewModel,

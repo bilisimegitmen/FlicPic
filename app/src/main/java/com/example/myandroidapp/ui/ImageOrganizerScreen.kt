@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -79,14 +78,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -97,30 +95,36 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.myandroidapp.data.FolderItem
 import com.example.myandroidapp.data.MediaItem
-import com.example.myandroidapp.ui.theme.ColorCardBackground
-import com.example.myandroidapp.ui.theme.ColorDark0
-import com.example.myandroidapp.ui.theme.ColorDark1
-import com.example.myandroidapp.ui.theme.ColorOrange1
-import com.example.myandroidapp.ui.theme.ColorOrange2
-import com.example.myandroidapp.ui.theme.ColorOrange3
-import com.example.myandroidapp.ui.theme.ColorRed1
-import com.example.myandroidapp.ui.theme.ColorRed2
-import com.example.myandroidapp.ui.theme.ColorRed3
-import com.example.myandroidapp.ui.theme.ColorTextPrimary
-import com.example.myandroidapp.ui.theme.ColorTextSecondary
-import com.example.myandroidapp.ui.theme.ColorYellow1
-import com.example.myandroidapp.ui.theme.ColorYellow2
+import com.example.myandroidapp.ui.theme.ColorBody
+import com.example.myandroidapp.ui.theme.ColorCanvas
+import com.example.myandroidapp.ui.theme.ColorCanvasSoft
+import com.example.myandroidapp.ui.theme.ColorHairline
+import com.example.myandroidapp.ui.theme.ColorHairlineSoft
+import com.example.myandroidapp.ui.theme.ColorHairlineStrong
+import com.example.myandroidapp.ui.theme.ColorInk
+import com.example.myandroidapp.ui.theme.ColorMuted
+import com.example.myandroidapp.ui.theme.ColorMutedSoft
+import com.example.myandroidapp.ui.theme.ColorOnPrimary
+import com.example.myandroidapp.ui.theme.ColorPrimary
+import com.example.myandroidapp.ui.theme.ColorSemanticError
+import com.example.myandroidapp.ui.theme.ColorSurfaceCard
+import com.example.myandroidapp.ui.theme.ColorSurfaceStrong
+import com.example.myandroidapp.ui.theme.ColorTimelineDone
+import com.example.myandroidapp.ui.theme.ColorTimelineEdit
+import com.example.myandroidapp.ui.theme.ColorTimelineGrep
+import com.example.myandroidapp.ui.theme.ColorTimelineRead
+import com.example.myandroidapp.ui.theme.ColorTimelineThinking
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-private val folderColors = listOf(
-    ColorRed3,
-    ColorOrange1,
-    ColorOrange2,
-    ColorOrange3,
-    ColorRed2,
-    ColorRed1
+// Signature AI-timeline pastel palette from design.md
+private val timelineFolderColors = listOf(
+    ColorTimelineThinking,
+    ColorTimelineGrep,
+    ColorTimelineRead,
+    ColorTimelineEdit,
+    ColorTimelineDone
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -157,15 +161,7 @@ fun ImageOrganizerScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        ColorDark0,
-                        ColorDark1,
-                        ColorDark0
-                    )
-                )
-            )
+            .background(ColorCanvas)
     ) {
         Column(
             modifier = Modifier
@@ -173,8 +169,8 @@ fun ImageOrganizerScreen(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // FlicPic Branding & Folder Header Bar
-            FlicPicAppHeader(
+            // Editorial Header Bar
+            EditorialAppHeader(
                 appTitle = uiState.appTitle,
                 activeFolder = uiState.selectedFolder,
                 currentIndex = uiState.currentIndex,
@@ -183,7 +179,7 @@ fun ImageOrganizerScreen(
                 onOpenTrashClick = { viewModel.openTrashSheet() }
             )
 
-            // Main Viewer Area with Prominent Arrows & Smooth Animations
+            // Main Viewer Area (Hairline-only depth, no drop shadows)
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -192,15 +188,15 @@ fun ImageOrganizerScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (!uiState.hasPermission) {
-                    PermissionCard(onRequestPermission = onRequestPermission)
+                    EditorialPermissionCard(onRequestPermission = onRequestPermission)
                 } else if (uiState.isLoading && uiState.images.isEmpty()) {
-                    CircularProgressIndicator(color = ColorYellow2)
+                    CircularProgressIndicator(color = ColorPrimary, strokeWidth = 2.dp)
                 } else if (!uiState.hasImages) {
-                    EmptyFolderPlaceholder(folderName = uiState.selectedFolder?.name)
+                    EditorialEmptyFolderPlaceholder(folderName = uiState.selectedFolder?.name)
                 } else {
                     val currentItem = uiState.currentImage
                     if (currentItem != null) {
-                        AnimatedImageViewerWithArrows(
+                        EditorialImageViewer(
                             mediaItem = currentItem,
                             currentIndex = uiState.currentIndex,
                             hasPrevious = uiState.hasPrevious,
@@ -213,8 +209,8 @@ fun ImageOrganizerScreen(
                 }
             }
 
-            // Clean Folder Selection Row (No watermark or color overlay on thumbnails)
-            FolderSelectionRow(
+            // Folder Selection Row
+            EditorialFolderSelectionRow(
                 folders = uiState.folders,
                 selectedFolder = uiState.selectedFolder,
                 onFolderSelected = { viewModel.selectFolder(it) },
@@ -223,8 +219,8 @@ fun ImageOrganizerScreen(
                     .padding(vertical = 6.dp)
             )
 
-            // Bottom Action Bar (Undo, Trash View, Permanent Delete)
-            TrashAndActionBar(
+            // Bottom Action Bar (Hairline card, 8dp buttons, no drop shadows)
+            EditorialActionBar(
                 canUndo = uiState.canUndo,
                 trashedCount = uiState.trashedItems.size,
                 pendingSyncCount = uiState.pendingSystemSyncCount,
@@ -247,7 +243,7 @@ fun ImageOrganizerScreen(
 
         // Trash & Restore Bottom Sheet
         if (uiState.showTrashSheet) {
-            TrashAndRestoreBottomSheet(
+            EditorialTrashBottomSheet(
                 trashedItems = uiState.trashedItems,
                 onRestoreItem = { viewModel.restoreItem(it) },
                 onSyncSystemTrash = { viewModel.syncPendingTrashToSystem() },
@@ -258,7 +254,7 @@ fun ImageOrganizerScreen(
 
         // Permanent Deletion Confirmation Dialog
         if (uiState.showDeleteConfirmDialog) {
-            PermanentDeleteDialog(
+            EditorialPermanentDeleteDialog(
                 itemCount = uiState.trashedItems.size,
                 onConfirm = { viewModel.confirmPermanentDelete() },
                 onDismiss = { viewModel.dismissDeleteConfirmation() }
@@ -268,11 +264,12 @@ fun ImageOrganizerScreen(
 }
 
 /**
- * FlicPic Top Bar & App Branding:
- * Displays "FlicPic" on the top left, with the current folder/album name dynamically next to it.
+ * Editorial Header Bar:
+ * - Display weight 400 (never bold), negative letter-spacing (-0.5px).
+ * - Warm near-black Ink for title, subtle separator, Muted for captions.
  */
 @Composable
-private fun FlicPicAppHeader(
+private fun EditorialAppHeader(
     appTitle: String,
     activeFolder: FolderItem?,
     currentIndex: Int,
@@ -283,7 +280,7 @@ private fun FlicPicAppHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 4.dp),
+            .padding(top = 4.dp, bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -294,45 +291,48 @@ private fun FlicPicAppHeader(
             ) {
                 Text(
                     text = appTitle,
-                    color = ColorYellow2,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.ExtraBold
+                    color = ColorInk,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Normal, // design.md: Display stays at weight 400
+                    letterSpacing = (-0.5).sp
                 )
                 Text(
-                    text = " • ",
-                    color = ColorOrange2,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    text = " / ",
+                    color = ColorHairlineStrong,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
                 )
                 Text(
                     text = activeFolder?.name ?: "Galeri",
-                    color = ColorTextPrimary,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    color = ColorBody,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
             Text(
-                text = "Yukarı Kaydır: Çöpe At | Oklar / Sola-Sağa: Gezin",
-                color = ColorTextSecondary,
-                fontSize = 11.sp
+                text = "Yukarı Kaydır: Çöpe At · Oklar: Gezin",
+                color = ColorMuted,
+                fontSize = 12.sp,
+                letterSpacing = 0.sp
             )
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (totalImages > 0) {
                 Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = ColorRed1,
-                    shadowElevation = 4.dp,
+                    shape = RoundedCornerShape(9999.dp), // rounded.pill
+                    color = ColorSurfaceStrong,
+                    border = BorderStroke(1.dp, ColorHairline),
                     modifier = Modifier.padding(end = 8.dp)
                 ) {
                     Text(
                         text = "${currentIndex + 1} / $totalImages",
-                        color = ColorTextPrimary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        color = ColorInk,
+                        fontSize = 12.sp,
+                        fontFamily = FontFamily.Monospace,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
                     )
                 }
@@ -341,8 +341,15 @@ private fun FlicPicAppHeader(
             BadgedBox(
                 badge = {
                     if (trashedCount > 0) {
-                        Badge(containerColor = ColorYellow2, contentColor = ColorDark0) {
-                            Text(text = "$trashedCount", fontWeight = FontWeight.Bold)
+                        Badge(
+                            containerColor = ColorPrimary,
+                            contentColor = ColorOnPrimary
+                        ) {
+                            Text(
+                                text = "$trashedCount",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 10.sp
+                            )
                         }
                     }
                 }
@@ -350,13 +357,18 @@ private fun FlicPicAppHeader(
                 IconButton(
                     onClick = onOpenTrashClick,
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = ColorDark1,
-                        contentColor = ColorOrange3
-                    )
+                        containerColor = ColorSurfaceCard,
+                        contentColor = ColorInk
+                    ),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(1.dp, ColorHairline, RoundedCornerShape(8.dp))
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Çöp Kutusu"
+                        contentDescription = "Çöp Kutusu",
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }
@@ -365,10 +377,13 @@ private fun FlicPicAppHeader(
 }
 
 /**
- * Animated Image Viewer with Prominent Navigation Arrows overlaying the screen.
+ * Editorial Image Viewer:
+ * - Hairline-only depth (1px ColorHairline on ColorSurfaceCard), no drop shadows.
+ * - Rounded 12dp ({rounded.lg}).
+ * - Minimalist circle navigation arrows.
  */
 @Composable
-private fun AnimatedImageViewerWithArrows(
+private fun EditorialImageViewer(
     mediaItem: MediaItem,
     currentIndex: Int,
     hasPrevious: Boolean,
@@ -396,18 +411,9 @@ private fun AnimatedImageViewerWithArrows(
         Box(
             modifier = modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(24.dp))
-                .background(ColorCardBackground)
-                .border(
-                    width = 2.dp,
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            ColorRed2.copy(alpha = 0.7f),
-                            ColorOrange2.copy(alpha = 0.5f)
-                        )
-                    ),
-                    shape = RoundedCornerShape(24.dp)
-                ),
+                .clip(RoundedCornerShape(12.dp)) // rounded.lg
+                .background(ColorSurfaceCard)
+                .border(1.dp, ColorHairline, RoundedCornerShape(12.dp)),
             contentAlignment = Alignment.Center
         ) {
             SwipeableImageContent(
@@ -418,7 +424,7 @@ private fun AnimatedImageViewerWithArrows(
                 onSwipeUp = onSwipeUp
             )
 
-            // Prominent Left Arrow Button
+            // Prominent Left Arrow Button (Hairline card, no drop shadow)
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -426,11 +432,10 @@ private fun AnimatedImageViewerWithArrows(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = ColorDark0.copy(alpha = if (hasPrevious) 0.85f else 0.35f),
-                    shadowElevation = if (hasPrevious) 8.dp else 0.dp,
-                    border = if (hasPrevious) BorderStroke(2.dp, ColorYellow2) else null,
+                    color = ColorSurfaceCard.copy(alpha = if (hasPrevious) 0.94f else 0.4f),
+                    border = BorderStroke(1.dp, if (hasPrevious) ColorHairlineStrong else ColorHairlineSoft),
                     modifier = Modifier
-                        .size(52.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .clickable(enabled = hasPrevious, onClick = onPreviousClick)
                 ) {
@@ -438,14 +443,14 @@ private fun AnimatedImageViewerWithArrows(
                         Icon(
                             imageVector = Icons.Default.ChevronLeft,
                             contentDescription = "Önceki Fotoğraf",
-                            tint = if (hasPrevious) ColorYellow2 else ColorTextSecondary.copy(alpha = 0.4f),
-                            modifier = Modifier.size(36.dp)
+                            tint = if (hasPrevious) ColorInk else ColorMutedSoft,
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 }
             }
 
-            // Prominent Right Arrow Button
+            // Prominent Right Arrow Button (Hairline card, no drop shadow)
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -453,11 +458,10 @@ private fun AnimatedImageViewerWithArrows(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = ColorDark0.copy(alpha = if (hasNext) 0.85f else 0.35f),
-                    shadowElevation = if (hasNext) 8.dp else 0.dp,
-                    border = if (hasNext) BorderStroke(2.dp, ColorYellow2) else null,
+                    color = ColorSurfaceCard.copy(alpha = if (hasNext) 0.94f else 0.4f),
+                    border = BorderStroke(1.dp, if (hasNext) ColorHairlineStrong else ColorHairlineSoft),
                     modifier = Modifier
-                        .size(52.dp)
+                        .size(44.dp)
                         .clip(CircleShape)
                         .clickable(enabled = hasNext, onClick = onNextClick)
                 ) {
@@ -465,8 +469,8 @@ private fun AnimatedImageViewerWithArrows(
                         Icon(
                             imageVector = Icons.Default.ChevronRight,
                             contentDescription = "Sonraki Fotoğraf",
-                            tint = if (hasNext) ColorYellow2 else ColorTextSecondary.copy(alpha = 0.4f),
-                            modifier = Modifier.size(36.dp)
+                            tint = if (hasNext) ColorInk else ColorMutedSoft,
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 }
@@ -588,41 +592,42 @@ private fun SwipeableImageContent(
                     )
                 }
                 .graphicsLayer {
-                    val scale = 1f - (upwardRatio * 0.15f)
+                    val scale = 1f - (upwardRatio * 0.12f)
                     scaleX = scale
                     scaleY = scale
-                    alpha = 1f - (upwardRatio * 0.4f)
+                    alpha = 1f - (upwardRatio * 0.35f)
                 }
         )
 
+        // Editorial Upward Swipe Indicator (Pastel peach & semantic error border, no drop shadow)
         if (upwardRatio > 0.05f) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(ColorRed3.copy(alpha = upwardRatio * 0.4f)),
+                    .background(ColorSemanticError.copy(alpha = upwardRatio * 0.12f)),
                 contentAlignment = Alignment.TopCenter
             ) {
                 Surface(
-                    shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp),
-                    color = ColorRed3,
-                    shadowElevation = 8.dp
+                    shape = RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp),
+                    color = ColorSurfaceCard,
+                    border = BorderStroke(1.dp, ColorSemanticError)
                 ) {
                     Row(
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 10.dp),
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Çöpe At",
-                            tint = ColorTextPrimary,
-                            modifier = Modifier.size(24.dp)
+                            tint = ColorSemanticError,
+                            modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = if (upwardRatio >= 0.9f) "Bırak ve Çöpe Taşınsın!" else "Çöpe Taşımak İçin Yukarı Kaydır",
-                            color = ColorTextPrimary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp
+                            text = if (upwardRatio >= 0.9f) "Bırakın, çöpe taşınsın" else "Çöpe taşımak için yukarı kaydırın",
+                            color = ColorSemanticError,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 13.sp
                         )
                     }
                 }
@@ -632,11 +637,11 @@ private fun SwipeableImageContent(
 }
 
 /**
- * Circular Folder Selection Row.
- * Thumbnails are rendered CLEANLY WITHOUT ANY ORANGE/RED WATERMARK OR MASK OVERLAY.
+ * Editorial Folder Selection Row:
+ * Uses the 5 AI-timeline pastel colors for ring accents on folders.
  */
 @Composable
-private fun FolderSelectionRow(
+private fun EditorialFolderSelectionRow(
     folders: List<FolderItem>,
     selectedFolder: FolderItem?,
     onFolderSelected: (FolderItem) -> Unit,
@@ -644,18 +649,18 @@ private fun FolderSelectionRow(
 ) {
     Column(modifier = modifier) {
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+            contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             itemsIndexed(folders) { index, folder ->
                 val isSelected = folder.bucketId == selectedFolder?.bucketId
-                val circleColor = folderColors[index % folderColors.size]
+                val accentColor = timelineFolderColors[index % timelineFolderColors.size]
 
-                FolderCircleItem(
+                EditorialFolderCircleItem(
                     folder = folder,
                     isSelected = isSelected,
-                    circleColor = circleColor,
+                    accentColor = accentColor,
                     onClick = { onFolderSelected(folder) }
                 )
             }
@@ -664,36 +669,34 @@ private fun FolderSelectionRow(
 }
 
 /**
- * Clean Folder Circular Thumbnail (NO OVERLAY / WATERMARK).
+ * Editorial Folder Circular Thumbnail (Hairline borders, no drop shadows).
  */
 @Composable
-private fun FolderCircleItem(
+private fun EditorialFolderCircleItem(
     folder: FolderItem,
     isSelected: Boolean,
-    circleColor: Color,
+    accentColor: Color,
     onClick: () -> Unit
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable(onClick = onClick)
-            .width(68.dp)
+            .width(66.dp)
     ) {
         Box(
             modifier = Modifier
-                .size(58.dp)
-                .shadow(elevation = if (isSelected) 8.dp else 3.dp, shape = CircleShape)
+                .size(56.dp)
                 .clip(CircleShape)
-                .background(ColorDark0)
+                .background(ColorSurfaceCard)
                 .border(
-                    width = if (isSelected) 3.5.dp else 1.5.dp,
-                    color = if (isSelected) ColorYellow2 else circleColor.copy(alpha = 0.6f),
+                    width = if (isSelected) 2.dp else 1.dp,
+                    color = if (isSelected) ColorPrimary else accentColor,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
         ) {
             if (folder.coverUri != null) {
-                // CLEAN THUMBNAIL WITHOUT ANY COLOR MASK OVERLAY
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(folder.coverUri)
@@ -707,24 +710,26 @@ private fun FolderCircleItem(
                 Icon(
                     imageVector = Icons.Default.Folder,
                     contentDescription = null,
-                    tint = ColorYellow2,
-                    modifier = Modifier.size(26.dp)
+                    tint = ColorMuted,
+                    modifier = Modifier.size(24.dp)
                 )
             }
 
-            // Folder count badge
+            // Folder count badge (Pill, hairline border)
             Surface(
-                shape = CircleShape,
-                color = ColorDark0.copy(alpha = 0.85f),
+                shape = RoundedCornerShape(9999.dp),
+                color = ColorSurfaceCard,
+                border = BorderStroke(1.dp, ColorHairline),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 2.dp)
             ) {
                 Text(
                     text = "${folder.count}",
-                    color = ColorYellow2,
+                    color = ColorInk,
                     fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
                 )
             }
@@ -734,9 +739,9 @@ private fun FolderCircleItem(
 
         Text(
             text = folder.name,
-            color = if (isSelected) ColorYellow2 else ColorTextSecondary,
+            color = if (isSelected) ColorInk else ColorMuted,
             fontSize = 11.sp,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center
@@ -745,10 +750,13 @@ private fun FolderCircleItem(
 }
 
 /**
- * Action & Trash Bar
+ * Editorial Action & Trash Bar:
+ * - Surface card with 1px hairline border ({colors.hairline}), NO DROP SHADOWS.
+ * - Compact 8dp radius for CTA buttons ({rounded.md}).
+ * - Cursor Orange used scarcely on primary callouts.
  */
 @Composable
-private fun TrashAndActionBar(
+private fun EditorialActionBar(
     canUndo: Boolean,
     trashedCount: Int,
     pendingSyncCount: Int,
@@ -758,89 +766,91 @@ private fun TrashAndActionBar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = ColorYellow2,
-        shadowElevation = 8.dp,
+        shape = RoundedCornerShape(12.dp), // rounded.lg
+        color = ColorSurfaceCard,
+        border = BorderStroke(1.dp, ColorHairline),
         modifier = modifier
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 10.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Undo Action Button ("Geri Al")
+            // Undo Button (Secondary button: white/soft surface, ink text, hairline border, 8dp radius)
             Button(
                 onClick = onUndoClick,
                 enabled = canUndo,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = ColorDark0,
-                    contentColor = ColorYellow2,
-                    disabledContainerColor = ColorDark0.copy(alpha = 0.4f),
-                    disabledContentColor = ColorDark1
+                    containerColor = ColorCanvasSoft,
+                    contentColor = ColorInk,
+                    disabledContainerColor = ColorCanvasSoft.copy(alpha = 0.5f),
+                    disabledContentColor = ColorMutedSoft
                 ),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(8.dp), // rounded.md
+                border = BorderStroke(1.dp, ColorHairlineStrong),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Undo,
                     contentDescription = "Geri Al",
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "Geri Al",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )
             }
 
-            // View Trash Items Button
+            // View Trash Items Button (Secondary style, subtle orange highlight if pending sync)
             Button(
                 onClick = onOpenTrashClick,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = ColorOrange1,
-                    contentColor = ColorTextPrimary
+                    containerColor = if (pendingSyncCount > 0) ColorPrimary.copy(alpha = 0.12f) else ColorCanvasSoft,
+                    contentColor = if (pendingSyncCount > 0) ColorPrimary else ColorInk
                 ),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, if (pendingSyncCount > 0) ColorPrimary else ColorHairlineStrong),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Çöp Kutusu",
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = if (pendingSyncCount > 0) "Çöp ($trashedCount*)" else "Çöp ($trashedCount)",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )
             }
 
-            // Permanent Delete Button ("Kalıcı Sil")
+            // Permanent Delete Button (Semantic error button)
             Button(
                 onClick = onEmptyTrashClick,
                 enabled = trashedCount > 0,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = ColorRed3,
-                    contentColor = ColorTextPrimary,
-                    disabledContainerColor = ColorRed1.copy(alpha = 0.35f),
-                    disabledContentColor = ColorTextSecondary.copy(alpha = 0.5f)
+                    containerColor = ColorSemanticError,
+                    contentColor = ColorOnPrimary,
+                    disabledContainerColor = ColorHairlineSoft,
+                    disabledContentColor = ColorMutedSoft
                 ),
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(8.dp),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.DeleteForever,
                     contentDescription = "Kalıcı Sil",
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "Kalıcı Sil",
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Medium,
                     fontSize = 13.sp
                 )
             }
@@ -849,11 +859,12 @@ private fun TrashAndActionBar(
 }
 
 /**
- * Trash & Restore Bottom Sheet with Batch Sync options
+ * Editorial Trash & Restore Bottom Sheet:
+ * - Clean cream background, 1px hairline dividers.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TrashAndRestoreBottomSheet(
+private fun EditorialTrashBottomSheet(
     trashedItems: List<MediaItem>,
     onRestoreItem: (MediaItem) -> Unit,
     onSyncSystemTrash: () -> Unit,
@@ -866,8 +877,8 @@ private fun TrashAndRestoreBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = ColorDark1,
-        contentColor = ColorTextPrimary
+        containerColor = ColorCanvas,
+        contentColor = ColorInk
     ) {
         Column(
             modifier = Modifier
@@ -884,15 +895,16 @@ private fun TrashAndRestoreBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = null,
-                        tint = ColorYellow2,
-                        modifier = Modifier.size(24.dp)
+                        tint = ColorInk,
+                        modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Çöp Kutusu (${trashedItems.size})",
-                        color = ColorYellow2,
+                        color = ColorInk,
                         fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Medium,
+                        letterSpacing = (-0.3).sp
                     )
                 }
 
@@ -900,7 +912,7 @@ private fun TrashAndRestoreBottomSheet(
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Kapat",
-                        tint = ColorTextSecondary
+                        tint = ColorBody
                     )
                 }
             }
@@ -908,9 +920,9 @@ private fun TrashAndRestoreBottomSheet(
             if (unsyncedCount > 0) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Surface(
-                    shape = RoundedCornerShape(10.dp),
-                    color = ColorOrange2.copy(alpha = 0.2f),
-                    border = BorderStroke(1.dp, ColorOrange2),
+                    shape = RoundedCornerShape(8.dp),
+                    color = ColorTimelineThinking.copy(alpha = 0.2f),
+                    border = BorderStroke(1.dp, ColorTimelineThinking),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -920,24 +932,31 @@ private fun TrashAndRestoreBottomSheet(
                     ) {
                         Text(
                             text = "$unsyncedCount fotoğraf galeri çöpüne işlenmeyi bekliyor.",
-                            color = ColorYellow2,
+                            color = ColorInk,
                             fontSize = 12.sp,
                             modifier = Modifier.weight(1f)
                         )
-                        TextButton(onClick = onSyncSystemTrash) {
+                        Button(
+                            onClick = onSyncSystemTrash,
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = ColorPrimary,
+                                contentColor = ColorOnPrimary
+                            ),
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
+                        ) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     imageVector = Icons.Default.Sync,
                                     contentDescription = null,
-                                    tint = ColorYellow2,
-                                    modifier = Modifier.size(16.dp)
+                                    tint = ColorOnPrimary,
+                                    modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "Sistem Çöpüne İşle",
-                                    color = ColorYellow2,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 12.sp
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 11.sp
                                 )
                             }
                         }
@@ -956,7 +975,7 @@ private fun TrashAndRestoreBottomSheet(
                 ) {
                     Text(
                         text = "Çöp kutusunda fotoğraf yok.",
-                        color = ColorTextSecondary,
+                        color = ColorMuted,
                         fontSize = 14.sp
                     )
                 }
@@ -969,7 +988,7 @@ private fun TrashAndRestoreBottomSheet(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(trashedItems, key = { it.id }) { item ->
-                        TrashedItemCard(
+                        EditorialTrashedItemCard(
                             mediaItem = item,
                             onRestore = { onRestoreItem(item) }
                         )
@@ -980,15 +999,18 @@ private fun TrashAndRestoreBottomSheet(
 
                 Button(
                     onClick = onEmptyTrash,
-                    colors = ButtonDefaults.buttonColors(containerColor = ColorRed3),
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = ColorSemanticError),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.DeleteForever, contentDescription = null)
+                    Icon(imageVector = Icons.Default.DeleteForever, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         text = "Çöpü Kalıcı Olarak Temizle",
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 14.sp
                     )
                 }
             }
@@ -997,14 +1019,14 @@ private fun TrashAndRestoreBottomSheet(
 }
 
 @Composable
-private fun TrashedItemCard(
+private fun EditorialTrashedItemCard(
     mediaItem: MediaItem,
     onRestore: () -> Unit
 ) {
     Surface(
-        shape = RoundedCornerShape(14.dp),
-        color = ColorDark0,
-        shadowElevation = 4.dp,
+        shape = RoundedCornerShape(8.dp),
+        color = ColorSurfaceCard,
+        border = BorderStroke(1.dp, ColorHairline),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
@@ -1012,7 +1034,7 @@ private fun TrashedItemCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(1f)
-                    .clip(RoundedCornerShape(10.dp))
+                    .clip(RoundedCornerShape(6.dp))
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
@@ -1029,7 +1051,7 @@ private fun TrashedItemCard(
 
             Text(
                 text = mediaItem.name,
-                color = ColorTextPrimary,
+                color = ColorInk,
                 fontSize = 11.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -1040,23 +1062,24 @@ private fun TrashedItemCard(
             Button(
                 onClick = onRestore,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = ColorOrange2,
-                    contentColor = ColorTextPrimary
+                    containerColor = ColorCanvasSoft,
+                    contentColor = ColorInk
                 ),
                 shape = RoundedCornerShape(8.dp),
+                border = BorderStroke(1.dp, ColorHairlineStrong),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
                     imageVector = Icons.Default.Restore,
                     contentDescription = "Geri Yükle",
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier.size(14.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "Geri Yükle",
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Medium
                 )
             }
         }
@@ -1064,99 +1087,105 @@ private fun TrashedItemCard(
 }
 
 /**
- * Permanent Delete Confirmation Dialog
+ * Editorial Permanent Delete Confirmation Dialog
  */
 @Composable
-private fun PermanentDeleteDialog(
+private fun EditorialPermanentDeleteDialog(
     itemCount: Int,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = ColorDark1,
-        titleContentColor = ColorYellow2,
-        textContentColor = ColorTextPrimary,
+        containerColor = ColorSurfaceCard,
+        titleContentColor = ColorInk,
+        textContentColor = ColorBody,
+        shape = RoundedCornerShape(12.dp),
         title = {
             Text(
                 text = "Fotoğrafları Kalıcı Olarak Sil",
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp
             )
         },
         text = {
             Text(
                 text = "$itemCount adet fotoğraf cihazınızdan kalıcı olarak silinecektir. Bu işlem geri alınamaz. Onaylıyor musunuz?",
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                lineHeight = 20.sp
             )
         },
         confirmButton = {
             Button(
                 onClick = onConfirm,
-                colors = ButtonDefaults.buttonColors(containerColor = ColorRed3)
+                colors = ButtonDefaults.buttonColors(containerColor = ColorSemanticError),
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text("Kalıcı Olarak Sil", color = ColorTextPrimary, fontWeight = FontWeight.Bold)
+                Text("Kalıcı Olarak Sil", color = ColorOnPrimary, fontWeight = FontWeight.Medium)
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("İptal", color = ColorTextSecondary)
+            TextButton(onClick = onDismiss, shape = RoundedCornerShape(8.dp)) {
+                Text("İptal", color = ColorBody)
             }
         }
     )
 }
 
 /**
- * Permission Request Card
+ * Editorial Permission Request Card
  */
 @Composable
-private fun PermissionCard(onRequestPermission: () -> Unit) {
+private fun EditorialPermissionCard(onRequestPermission: () -> Unit) {
     Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = ColorDark1,
-        shadowElevation = 6.dp,
+        shape = RoundedCornerShape(12.dp),
+        color = ColorSurfaceCard,
+        border = BorderStroke(1.dp, ColorHairline),
         modifier = Modifier.padding(24.dp)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = Icons.Default.PhotoLibrary,
                 contentDescription = null,
-                tint = ColorYellow2,
-                modifier = Modifier.size(54.dp)
+                tint = ColorPrimary, // Cursor Orange
+                modifier = Modifier.size(48.dp)
             )
             Spacer(modifier = Modifier.height(14.dp))
             Text(
                 text = "Galeri Erişimi Gerekli",
-                color = ColorTextPrimary,
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold
+                color = ColorInk,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = "Cihazınızdaki fotoğrafları albüm albüm görüntülemek ve düzenlemek için depolama izni vermelisiniz.",
-                color = ColorTextSecondary,
+                color = ColorBody,
                 fontSize = 13.sp,
+                lineHeight = 18.sp,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = onRequestPermission,
-                colors = ButtonDefaults.buttonColors(containerColor = ColorOrange2),
-                shape = RoundedCornerShape(12.dp)
+                colors = ButtonDefaults.buttonColors(containerColor = ColorPrimary),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
             ) {
-                Text("İzni Etkinleştir", color = ColorTextPrimary, fontWeight = FontWeight.Bold)
+                Text("İzni Etkinleştir", color = ColorOnPrimary, fontWeight = FontWeight.Medium)
             }
         }
     }
 }
 
 /**
- * Empty Folder Placeholder
+ * Editorial Empty Folder Placeholder
  */
 @Composable
-private fun EmptyFolderPlaceholder(folderName: String?) {
+private fun EditorialEmptyFolderPlaceholder(folderName: String?) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -1165,21 +1194,21 @@ private fun EmptyFolderPlaceholder(folderName: String?) {
         Icon(
             imageVector = Icons.Default.Folder,
             contentDescription = null,
-            tint = ColorOrange3,
-            modifier = Modifier.size(50.dp)
+            tint = ColorMutedSoft,
+            modifier = Modifier.size(44.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "${folderName ?: "Klasör"} boş",
-            color = ColorTextPrimary,
+            color = ColorInk,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Bu albümde gösterilecek fotoğraf yok ya da tümü çöpe taşındı.",
-            color = ColorTextSecondary,
-            fontSize = 12.sp,
+            color = ColorMuted,
+            fontSize = 13.sp,
             textAlign = TextAlign.Center
         )
     }
