@@ -42,10 +42,10 @@ com.example.myandroidapp-appcompat-resources-1.6.1-40 C:\Users\pc2\.gradle\cache
 com.example.myandroidapp-lifecycle-process-2.8.0-41 C:\Users\pc2\.gradle\caches\8.13\transforms\eefeb579f174901b73c08ae75222807a\transformed\lifecycle-process-2.8.0\res
 com.example.myandroidapp-ui-geometry-release-42 C:\Users\pc2\.gradle\caches\8.13\transforms\f36ed845c4bd6815b320e1714e0cc37a\transformed\ui-geometry-release\res
 com.example.myandroidapp-material-ripple-release-43 C:\Users\pc2\.gradle\caches\8.13\transforms\f5a547af866c04003846ee7c14ffec76\transformed\material-ripple-release\res
-com.example.myandroidapp-resValues-44 C:\Users\pc2\Desktop\Galeri APP\app\build\generated\res\resValues\debug
-com.example.myandroidapp-updated_navigation_xml-45 C:\Users\pc2\Desktop\Galeri APP\app\build\generated\updated_navigation_xml\debug
-com.example.myandroidapp-packageDebugResources-46 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.myandroidapp-packageDebugResources-47 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.myandroidapp-debug-48 C:\Users\pc2\Desktop\Galeri APP\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.myandroidapp-debug-49 C:\Users\pc2\Desktop\Galeri APP\app\src\debug\res
-com.example.myandroidapp-main-50 C:\Users\pc2\Desktop\Galeri APP\app\src\main\res
+com.example.myandroidapp-resValues-44 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\build\generated\res\resValues\debug
+com.example.myandroidapp-updated_navigation_xml-45 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\build\generated\updated_navigation_xml\debug
+com.example.myandroidapp-packageDebugResources-46 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.myandroidapp-packageDebugResources-47 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.myandroidapp-debug-48 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.myandroidapp-debug-49 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\debug\res
+com.example.myandroidapp-main-50 C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\res
