@@ -53,12 +53,12 @@
 34        android:extractNativeLibs="false"
 35        android:fullBackupContent="false"
 35-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:20:9-42
-36        android:icon="@drawable/logo"
-36-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:17:9-38
+36        android:icon="@mipmap/ic_launcher"
+36-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:17:9-43
 37        android:label="@string/app_name"
 37-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:22:9-41
-38        android:roundIcon="@drawable/logo"
-38-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:18:9-43
+38        android:roundIcon="@mipmap/ic_launcher_round"
+38-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:18:9-54
 39        android:supportsRtl="true"
 39-->C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:23:9-35
 40        android:testOnly="true"

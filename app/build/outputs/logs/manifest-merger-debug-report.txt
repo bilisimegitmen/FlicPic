@@ -117,9 +117,9 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\pc2\.gradle\caches
 	android:fullBackupContent
 		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:20:9-42
 	android:roundIcon
-		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:18:9-43
+		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:18:9-54
 	android:icon
-		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:17:9-38
+		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:17:9-43
 	android:allowBackup
 		ADDED from C:\Users\pc2\Desktop\Yeni klasör\FlicPic\app\src\main\AndroidManifest.xml:19:9-36
 	android:theme

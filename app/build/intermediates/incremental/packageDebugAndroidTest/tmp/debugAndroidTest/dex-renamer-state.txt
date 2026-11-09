@@ -1,0 +1,7 @@
+#Mon Nov 09 11:41:12 TRT 2026
+base.0=C\:\\Users\\pc2\\Desktop\\Yeni klasör\\FlicPic\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
+base.1=C\:\\Users\\pc2\\Desktop\\Yeni klasör\\FlicPic\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
+path.0=classes.dex
+path.1=0/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex
